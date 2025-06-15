@@ -1,0 +1,41 @@
+<svg viewBox='0 -960 960 960' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>
+    <defs>
+        <!-- Define a linear gradient for the shine effect -->
+        <linearGradient id='shineGradient' x1='-100%' y1='0%' x2='200%' y2='0%' gradientUnits='objectBoundingBox' gradientTransform='rotate(45)'>
+            <!-- Stops define the gradient colors: transparent -> bright white -> transparent -->
+            <stop offset='0%' stop-color='rgba(255,255,255,0)' />
+            <stop offset='30%' stop-color='rgba(255,255,255,0)' />
+            <stop offset='45%' stop-color='rgba(255,255,255,0.4)' /> <!-- Softer start of shine -->
+            <stop offset='50%' stop-color='rgba(255,255,255,0.8)' /> <!-- Brightest part of the shine -->
+            <stop offset='55%' stop-color='rgba(255,255,255,0.4)' /> <!-- Softer end of shine -->
+            <stop offset='70%' stop-color='rgba(255,255,255,0)' />
+            <stop offset='100%' stop-color='rgba(255,255,255,0)' />
+
+            <!-- Animate the x1 and x2 attributes to slide the entire gradient from left to right -->
+            <animate attributeName='x1' from='-100%' to='100%' dur='1.5s' repeatCount='indefinite' />
+            <animate attributeName='x2' from='0%' to='300%' dur='1.5s' repeatCount='indefinite' />
+        </linearGradient>
+
+        <!-- Define the base path here, so it can be referenced by ID -->
+        <!-- The 'd' attribute has been updated with your new path data -->
+        <path id='starPath' d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z'/>
+    </defs>
+    <style>
+        /* Define a CSS variable for the primary fill color */
+        :root {
+            --primary-fill-color: #0b3954; /* Change this value to set the icon's base color */
+        }
+
+        /* Apply the primary fill color to the base icon */
+        .base-icon {
+            fill: var(--primary-fill-color);
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.15)); /* Subtle drop shadow */
+        }
+    </style>
+
+    <!-- Use the defined path for the base icon -->
+    <use href='#starPath' class='base-icon' />
+
+    <!-- Use the defined path again for the shining reflection, applying the gradient fill -->
+    <use href='#starPath' fill='url(#shineGradient)' />
+</svg>

@@ -1,0 +1,40 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:odc="urn:schemas-microsoft-com:office:odc"
+      xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/x-ms-odc; charset=utf-8">
+  <meta name="ProgId" content="ODC.Cube">
+  <meta name="SourceType" content="OLEDB">
+  <title>Power BI Connection</title>
+</head>
+
+<body>
+<xml id="msodc">
+  <odc:OfficeDataConnection>
+    <odc:Connection odc:Type="OLEDB">
+      <odc:ConnectionString>
+        Provider=MSOLAP.8;
+        Integrated Security=ClaimsToken;
+        Persist Security Info=True;
+        Initial Catalog=sobe_wowvirtualserver-16557932-afa6-44c0-8fd6-dca6dcfccdc0;
+        Data Source=pbiazure://api.powerbi.com;
+        MDX Compatibility=1;
+        Safety Options=2;
+        MDX Missing Member Mode=Error;
+        Identity Provider=https://login.microsoftonline.com/common, https://analysis.windows.net/powerbi/api, 929d0ec0-7a41-4b1e-bc7c-b754a28bddcc;
+        Update Isolation Level=2
+      </odc:ConnectionString>
+      <odc:CommandType>Cube</odc:CommandType>
+      <odc:CommandText>Model</odc:CommandText>
+    </odc:Connection>
+    <odc:DataSource>
+      <odc:Name>Power BI Dataset</odc:Name>
+      <odc:Description>Connects to a Power BI dataset with organizational auth</odc:Description>
+    </odc:DataSource>
+    <odc:ConnectionFileVersion>1.0</odc:ConnectionFileVersion>
+  </odc:OfficeDataConnection>
+</xml>
+</body>
+
+</html>

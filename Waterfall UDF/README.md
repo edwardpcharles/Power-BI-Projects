@@ -1,11 +1,12 @@
 # EdwardCharles.WaterfallSVG
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Edward%20Charles-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/edward-charles-085025b1/)
-[![YouTube](https://img.shields.io/badge/YouTube-@DropMaterializedView-red?style=flat&logo=youtube)](https://www.youtube.com/@DropMaterializedView)
+[![LinkedIn](https://www.linkedin.com/in/edward-charles-085025b1/)]
+[![YouTube](https://www.youtube.com/@DropMaterializedView)]
 
 Generate SVG waterfall charts for P&L visualization in Power BI.
 
-![Example Chart](example.png)
+![Example Chart](https://raw.githubusercontent.com/edwardpcharles/Power-BI-Projects/main/Waterfall%20UDF/example.png
+)
 
 ## Attribution
 
@@ -161,4 +162,5 @@ Returns an SVG data URI string for use in Power BI Image visual.
 ## License
 
 This work is licensed under [CC BY-SA 4.0 International](http://creativecommons.org/licenses/by-sa/4.0/).
+
 

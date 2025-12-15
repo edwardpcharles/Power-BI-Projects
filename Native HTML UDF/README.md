@@ -1,7 +1,21 @@
 # NativeHTML UDF Documentation
 
+- [LinkedIn: Edward Charles](https://www.linkedin.com/in/edward-charles-085025b1/)
+- [YouTube: @DropMaterializedView](https://www.youtube.com/@DropMaterializedView)
+
 ## Overview
 The `NativeHTML` function allows you to render rich HTML and CSS within Power BI visuals (designed ideally for the image visual) by wrapping them in an SVG `foreignObject`.
+
+### Variables
+*   **Width:** - DOUBLE - Width of the SVG viewport/canvas in pixels
+*   **Height:** - DOUBLE - Hieght of the SVG viewport/canvas in pixels
+*   **IsVisibile:** - BOOLEAN - Toggle for visibility (TRUE renders normally, FALSE applies visibility:hidden), this allows for you to make a text box conditionally visibile. 
+*   **HtmlContent:** - STRING - The raw HTML text or markup to be rendered inside the SVG
+*   **CssContent:** - STRING - Optional custom CSS string (if set to "", uses DefaultCss; if populated, replaces DefaultCss)
+
+### Returns
+SVG data URI string for use in Image visual
+
 
 ## Usage
 ```dax
@@ -31,16 +45,14 @@ Power BI's rendering engine (via SVG foreignObject) supports most standard HTML5
 *   `<iframe>`: Generally blocked.
 *   External resources (fonts, images) may not load depending on Power BI environment (Desktop vs Service). **Embed everything** for best results.
 
+> [!WARNING]
+> You need to replace any " with "" if your HTML contains quotes in the code. In DAX, "" is the escape character for a quotation mark.
+
 ## Styling with CSS
 You can pass a CSS string to the `CssContent` parameter. This is applied to a wrapper `<div>` surrounding your content.
 
 ### Using the `style` Attribute
 You can also use inline styles within your `HtmlContent`.
-
-> [!WARNING]
-> **Inline Hex Colors**: DAX cannot automatically detect if a `#` is inside a style tag or part of your text. 
-> *   If you use hex colors in `HtmlContent` (e.g. `style='color:#FFF'`), you **must** manually replace `#` with `%23` (e.g. `style='color:%23FFF'`) or the image will break.
-> *   **Recommended**: Use the `CssContent` parameter for styles, as it automatically handles `#` encoding for you.
 
 ```dax
 -- Example: A flexbox card
@@ -128,3 +140,4 @@ NativeHTML(
     "font-family: 'Segoe UI', sans-serif; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;"
 )
 ```
+

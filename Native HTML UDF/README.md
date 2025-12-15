@@ -83,22 +83,6 @@ Virtually all CSS properties supported by modern browsers work here, including:
 *   **Decorations:** `background`, `border`, `box-shadow`, `linear-gradient`.
 *   **Transforms:** `transform: rotate(...)`, `scale(...)`.
 
-```dax
--- Example: A flexbox card
-NativeHTML(
-    300, 100, TRUE,
-    
-    -- HTML Content
-    "<div style='display:flex; justify-content:space-between; align-items:center;'>" &
-    "  <span>Revenue</span>" &
-    "  <span style='font-weight:bold; color:green;'>$1M</span>" &
-    "</div>",
-    
-    -- Global CSS for wrapper (optional)
-    "font-family: 'Segoe UI'; font-size: 14px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;"
-)
-```
-
 ## Examples
 
 ### 1. Simple KPI Badge
@@ -135,4 +119,5 @@ NativeHTML(
     "font-family: 'Segoe UI', sans-serif; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;"
 )
 ```
+
 

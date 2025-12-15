@@ -16,7 +16,6 @@ The `NativeHTML` function allows you to render rich HTML and CSS within Power BI
 ### Returns
 SVG data URI string for use in Image visual
 
-
 ## Usage
 ```dax
 Measure = NativeHTML( 
@@ -27,7 +26,11 @@ Measure = NativeHTML(
     "color:red;"        -- CssContent
 )
 ```
-Ensure the "Data Category" of your measure is set to **Image URL**.
+
+> [!Troubleshooting]
+>*   **Image not showing?** Check "Data Category" is "Image URL".
+>*   **Text cut off?** Ensure `Width` and `Height` are sufficient.
+>*   **Quotes breaking DAX?** Use double double-quotes `""` to escape the `"` in your HTML DAX string.
 
 ## Compatible HTML Tags
 Power BI's rendering engine (via SVG foreignObject) supports most standard HTML5 tags. However, interactivity is limited.
@@ -44,38 +47,6 @@ Power BI's rendering engine (via SVG foreignObject) supports most standard HTML5
 *   `<script>`: Javascript is strictly blocked for security.
 *   `<iframe>`: Generally blocked.
 *   External resources (fonts, images) may not load depending on Power BI environment (Desktop vs Service). **Embed everything** for best results.
-
-> [!WARNING]
-> You need to replace any " with "" if your HTML contains quotes in the code. In DAX, "" is the escape character for a quotation mark.
-
-## Styling with CSS
-You can pass a CSS string to the `CssContent` parameter. This is applied to a wrapper `<div>` surrounding your content.
-
-### Using the `style` Attribute
-You can also use inline styles within your `HtmlContent`.
-
-```dax
--- Example: A flexbox card
-NativeHTML(
-    300, 100, TRUE,
-    
-    -- HTML Content
-    "<div style='display:flex; justify-content:space-between; align-items:center;'>" &
-    "  <span>Revenue</span>" &
-    "  <span style='font-weight:bold; color:green;'>$1M</span>" &
-    "</div>",
-    
-    -- Global CSS for wrapper (optional)
-    "font-family: 'Segoe UI'; font-size: 14px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;"
-)
-```
-
-### Supported CSS Properties
-Virtually all CSS properties supported by modern browsers work here, including:
-*   **Layout:** `display: flex`, `display: grid`, `position: absolute`.
-*   **Typography:** `font-family`, `font-size`, `color`, `text-shadow`.
-*   **Decorations:** `background`, `border`, `box-shadow`, `linear-gradient`.
-*   **Transforms:** `transform: rotate(...)`, `scale(...)`.
 
 ## Nested Layouts (Divs within Divs)
 Yes! You can nest as many `<div>` tags as you like within the `HtmlContent` parameter. This is essential for complex layouts like cards, grids, or multi-column text.
@@ -99,10 +70,34 @@ NativeHTML(
 )
 ```
 
-## Troubleshooting
-*   **Image not showing?** Check "Data Category" is "Image URL".
-*   **Text cut off?** Ensure `Width` and `Height` are sufficient.
-*   **Quotes breaking DAX?** Use double double-quotes `""` to escape the `"` in your HTML DAX string.
+## Styling with CSS
+You can pass a CSS string to the `CssContent` parameter. This is applied to a wrapper `<div>` surrounding your content.
+
+### Using the `style` Attribute
+You can also use inline styles within your `HtmlContent`.
+
+### Supported CSS Properties
+Virtually all CSS properties supported by modern browsers work here, including:
+*   **Layout:** `display: flex`, `display: grid`, `position: absolute`.
+*   **Typography:** `font-family`, `font-size`, `color`, `text-shadow`.
+*   **Decorations:** `background`, `border`, `box-shadow`, `linear-gradient`.
+*   **Transforms:** `transform: rotate(...)`, `scale(...)`.
+
+```dax
+-- Example: A flexbox card
+NativeHTML(
+    300, 100, TRUE,
+    
+    -- HTML Content
+    "<div style='display:flex; justify-content:space-between; align-items:center;'>" &
+    "  <span>Revenue</span>" &
+    "  <span style='font-weight:bold; color:green;'>$1M</span>" &
+    "</div>",
+    
+    -- Global CSS for wrapper (optional)
+    "font-family: 'Segoe UI'; font-size: 14px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;"
+)
+```
 
 ## Examples
 
@@ -140,4 +135,3 @@ NativeHTML(
     "font-family: 'Segoe UI', sans-serif; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;"
 )
 ```
-

@@ -27,10 +27,10 @@ Measure = NativeHTML(
 )
 ```
 
-> [!Troubleshooting]
->*   **Image not showing?** Check "Data Category" is "Image URL".
->*   **Text cut off?** Ensure `Width` and `Height` are sufficient.
->*   **Quotes breaking DAX?** Use double double-quotes `""` to escape the `"` in your HTML DAX string.
+> [!WARNING]
+> * **Image not showing?** Make sure the *Data Category* is set to **Image URL**.
+> * **Text cut off?** Verify that `Width` and `Height` values are large enough.
+> * **Quotes breaking DAX?** Use double double-quotes `""` to escape the `"` character in your HTML DAX string.
 
 ## Compatible HTML Tags
 Power BI's rendering engine (via SVG foreignObject) supports most standard HTML5 tags. However, interactivity is limited.
@@ -135,3 +135,4 @@ NativeHTML(
     "font-family: 'Segoe UI', sans-serif; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;"
 )
 ```
+

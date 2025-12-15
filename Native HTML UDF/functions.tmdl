@@ -1,3 +1,9 @@
+/// @Width {DOUBLE} Width of the SVG viewport/canvas in pixels
+/// @Height {DOUBLE} Height of the SVG viewport/canvas in pixels
+/// @IsVisible {BOOLEAN} Toggle for visibility (TRUE renders normally, FALSE applies visibility:hidden)
+/// @HtmlContent {STRING} The raw HTML text or markup to be rendered inside the SVG
+/// @CssContent {STRING} Optional custom CSS string (if blank, uses DefaultCss; if populated, replaces DefaultCss)
+/// @returns SVG data URI string for use in Image visual
 function 'EdwardCharles.NativeHTML.HTMLimage' = 
     (
         Width : DOUBLE, 
@@ -21,20 +27,13 @@ function 'EdwardCharles.NativeHTML.HTMLimage' =
             CssContent = "", DefaultCss, CssContent
         )
 
-    /// Sanitize/Encode Inputs
+    /// Sanitize/Encode Inputs:
     /// 1. Replace <br> with <br/> and <hr> with <hr/> because SVG foreignObject requires strict XHTML.
-    /// 2. Encode '#' to '%23' for CSS (Required for Data URLs).
 
     var SafeHtml = 
         SUBSTITUTE(
             SUBSTITUTE( HtmlContent, "<br>", "<br/>" ),
             "<hr>", "<hr/>"
-        )
-
-    var SafeCss = 
-        SUBSTITUTE(
-            SUBSTITUTE(TotalCss, "#", "%23" ),
-            "'", "%27"
         )
     
     // Controls visibility of the HTML Block
@@ -45,7 +44,7 @@ function 'EdwardCharles.NativeHTML.HTMLimage' =
         "data:image/svg+xml;utf8," &
         "<svg xmlns='http://www.w3.org/2000/svg' width='" & Width & "' height='" & Height & "' viewBox='0 0 " & Width & " " & Height & "'>" &
         "  <foreignObject width='100%' height='100%'>" &
-        "    <div xmlns='http://www.w3.org/1999/xhtml' style='" & VisibilityRule & " " & SafeCss & "'>" &
+        "    <div xmlns='http://www.w3.org/1999/xhtml' style=""" & VisibilityRule & " " & TotalCss & """>" &
                 SafeHtml &
         "    </div>" &
         "  </foreignObject>" &

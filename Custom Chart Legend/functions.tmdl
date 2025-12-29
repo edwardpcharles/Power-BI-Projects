@@ -1,0 +1,130 @@
+createOrReplace
+	/// @TitleText {STRING} The optional title text
+    /// @TitleOnOwnLine {BOOLEAN} If true, the title sits on its own line above the legend items
+    /// @TitleMaxWidth {INT64} The max width of the title before it wraps
+	/// @TitleColor {STRING} The color of the title text (Hex or CSS color name)
+    /// @LabelColor {STRING} The color of the legend label text (Hex or CSS color name)
+	/// @FontSize {INT64} The size of the label text and the circle is the equivalent of one line
+	/// @LabelMaxWidth {INT64} The max label text width. 
+	/// @StrokeWidth {INT64} The width of the stroke around the circle
+	/// @MinGap {INT64} The minimum gap both to the right and then to the top between the labels
+	/// @data {TABLE} A data table for the labels
+	/// @circleFillColor {ANYREF} A column in the table with fill color of the indicator
+	/// @strokeColor {ANYREF} A column in the table with the stroke color of the indicator if blank it will default to the fill color
+	/// @labelText {ANYREF} A column with the label text
+	/// @returns SVG data URI string for use in Image visual
+	function 'EdwardCharles.legend.svg' = 
+		(
+			TitleText : STRING,
+            TitleOnOwnLine : BOOLEAN,
+            TitleMaxWidth : INT64,
+			TitleColor : STRING,
+            LabelColor : STRING,
+			FontSize : INT64, 
+			LabelMaxWidth : INT64, 
+			StrokeWidth : INT64, 
+			MinGap : INT64, 
+			data : TABLE,
+			circleFillColor: ANYREF EXPR,
+			strokeColor: ANYREF EXPR,
+			labelText: ANYREF EXPR
+		) => 
+		VAR _data = SELECTCOLUMNS(
+							data,
+							"FillHex", circleFillColor,
+							"BorderHex", strokeColor,
+							"Label",  labelText
+						)
+		VAR _Style = 
+		"<style>
+			.container {
+				width: 100%;
+				height: 100%;
+				font-family: 'Segoe UI', 'SF Pro Text', '-apple-system', 'Roboto', 'Helvetica Neue', sans-serif;
+				font-size: " & FontSize  & "px;
+				overflow: visible;
+				padding: 5px;
+				display: flex; 
+				flex-direction: row; 
+				flex-wrap: wrap; 
+				align-items: flex-start; 
+				box-sizing: border-box;
+				gap:" & MinGap & "px;
+			}
+			.title {
+				font-weight: bold;
+                line-height: 1.1;
+                word-break: break-all;
+				color: " & TitleColor & ";
+                max-width: " & IF(TitleMaxWidth > 0, TitleMaxWidth & "px", "100%") & ";
+                flex: 0 0 auto;
+            }
+			.break {
+				width: 100%;
+				margin-top: -" & MinGap & "px;
+                height:0;
+                margin: 0;
+            }
+			.item {
+				display: flex;
+				align-items: flex-start; 
+			}
+			.icon-svg {
+				display: block;
+				width: " & FontSize   & "px;
+				height: " & FontSize   & "px;
+				min-width: " & FontSize   & "px; 
+				min-height: " & FontSize   & "px;
+				margin-right: 5px;
+				margin-top: 2px; 
+			}
+			.label {
+				max-width: " & LabelMaxWidth & "px;
+				color: " & LabelColor & ";
+				word-break: break-all;
+				line-height: 1.1;
+			}
+		</style>"
+
+		VAR _TitleHTML = 
+            IF(
+                LEN(TitleText) > 0, 
+                "<div class='title'>" & TitleText & "</div>", 
+                ""
+            )
+		VAR _LineBreak = IF(TitleOnOwnLine && LEN(TitleText) > 0, "<div class='break'></div>", "")
+		VAR _ItemsHTML = 
+			CONCATENATEX (
+				_data,
+				VAR _HasBorder = LEN ([BorderHex]) > 0
+				VAR _Border = IF( _HasBorder, [BorderHex], [FillHex]) 
+				VAR StrokeWidthMax = IF(StrokeWidth >= FontSize , FontSize  - 1, StrokeWidth)
+				VAR _Center = FontSize   / 2
+				VAR _Radius = _Center - ( StrokeWidthMax / 2 ) 
+			
+				VAR _CircleSVG = 
+					"<svg class='icon-svg' viewBox='0 0 " & FontSize   & " " & FontSize   & "' xmlns='http://www.w3.org/2000/svg'>" &
+					"<circle cx='" & _Center & "' cy='" & _Center & "' r='" & _Radius & "' fill='" & [FillHex] & "' stroke='" & _Border & "' stroke-width='" & StrokeWidthMax & "' />" &
+					"</svg>"
+				RETURN 
+					"<div class='item'>" &
+					_CircleSVG &
+					"<div class='label'>" & [Label] & "</div>" &
+					"</div>",
+				""
+			)
+			
+		VAR _SVG = 
+			"<svg xmlns='http://www.w3.org/2000/svg'  width='100%' height='100%'>" &
+			"<foreignObject width='100%' height='100%'>" &
+			"<div xmlns='http://www.w3.org/1999/xhtml' class='container'>" &
+			_Style &
+			_TitleHTML &
+			_LineBreak &
+			_ItemsHTML &
+			_LineBreak &
+			"</div>" &
+			"</foreignObject>" &
+			"</svg>"
+		RETURN
+			"data:image/svg+xml;utf8," & _SVG

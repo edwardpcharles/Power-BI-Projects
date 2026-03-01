@@ -1,0 +1,80 @@
+let
+    // 1. Config
+    JIRA_URL    = "",
+    EMAIL       = "",
+    API_TOKEN   = "",
+    PROJECT_KEY = "",
+
+    // 2. Auth header
+    AuthHeader = "Basic " & Binary.ToText(Text.ToBinary(EMAIL & ":" & API_TOKEN), BinaryEncoding.Base64),
+
+    // 3. API call — using /search/jql (v3 current endpoint)
+    Source = Json.Document(Web.Contents(JIRA_URL, [
+        RelativePath = "/rest/api/3/search/jql",
+        Query = [
+            jql        = "project = " & PROJECT_KEY & " ORDER BY created DESC",
+            maxResults = "100",
+            fields     = "summary,status,assignee,priority,parent,issuetype,duedate"
+        ],
+        Headers = [
+            Authorization = AuthHeader,
+            Accept        = "application/json"
+        ]
+    ])),
+
+    // 4. Drill into issues list
+    issues = Source[issues],
+
+    // 5. Convert to table
+    #"Converted to Table" = Table.FromList(issues, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+
+    // 6. Expand key and fields
+    #"Expanded Column1" = Table.ExpandRecordColumn(
+        #"Converted to Table", "Column1",
+        {"key", "fields"},
+        {"Key", "fields"}
+    ),
+
+    // 7. Expand the fields record
+    #"Expanded fields" = Table.ExpandRecordColumn(
+        #"Expanded Column1", "fields",
+        {"summary", "status", "priority", "assignee", "parent", "issuetype", "duedate"},
+        {"Title", "Status_Rec", "Priority_Rec", "Assignee_Rec", "Parent_Rec", "Type_Rec", "Due Date"}
+    ),
+
+    // 8. Extract scalar values from nested records
+    //    Parent comes back as { id, key, self, fields: { summary, ... } }
+    //    so _[fields][summary] works when fields are included — but to be safe we fall back to _[key]
+    #"Final Table" = Table.TransformColumns(#"Expanded fields", {
+        {"Status_Rec",   each if _ = null then null else _[name]},
+        {"Priority_Rec", each if _ = null then null else _[name]},
+        {"Type_Rec",     each if _ = null then null else _[name]},
+        {"Assignee_Rec", each if _ = null then "Unassigned" else _[displayName]},
+        {"Parent_Rec",   each if _ = null then "No Parent"
+                              else try _[fields][summary]
+                              otherwise try _[key] otherwise "No Parent"}
+    }),
+
+    // 9. Rename columns
+    #"Renamed Columns" = Table.RenameColumns(#"Final Table", {
+        {"Status_Rec",   "Board Status"},
+        {"Priority_Rec", "Priority"},
+        {"Assignee_Rec", "Assignee"},
+        {"Parent_Rec",   "Parent Epic"},
+        {"Type_Rec",     "Issue Type"}
+    }),
+
+    // 10. Set correct data types
+    #"Typed" = Table.TransformColumnTypes(#"Renamed Columns", {
+        {"Key",          type text},
+        {"Title",        type text},
+        {"Board Status", type text},
+        {"Priority",     type text},
+        {"Assignee",     type text},
+        {"Parent Epic",  type text},
+        {"Issue Type",   type text},
+        {"Due Date",     type date}
+    })
+
+in
+    #"Typed"
